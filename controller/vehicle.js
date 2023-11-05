@@ -9,39 +9,60 @@ import {
   updateVehicleStatus,
 } from "../services/vehicle.service.js";
 import ErrorHander from "../utils/errorhandler.js";
+import {
+  bookVehicleSchema,
+  VehicleQuerySchema,
+} from "../validation/vehicleValidation.js";
 
 export const getBookingInfo = catchAsyncErrors(async (req, res, next) => {
-  const { vehicleType, vehicleSubType, vehileInfo } = req.query;
-
-  if (!vehicleType) {
-    const details = await getAllVehicleType();
-    if (details) return res.status(200).send({ details });
+  const { error, value } = VehicleQuerySchema.validate(req.query);
+  if (error) {
+    console.log("error", error);
+    return next(new ErrorHander(JSON.stringify(error.details), 400));
   }
-  if (vehicleType && vehicleSubType) {
-    const details = await getAllVehicleInfo(vehicleSubType);
+
+  const { vehicleType, vehicleSubType } = value;
+
+  if (Object.keys(req.query).length === 0) {
+    const details = await getAllVehicleType();
     if (details) return res.status(200).send({ details });
   }
   if (vehicleType && !vehicleSubType) {
     const details = await getAllSubModelType(vehicleType);
     if (details) return res.status(200).send({ details });
   }
+  if (vehicleSubType) {
+    const details = await getAllVehicleInfo(vehicleSubType);
+    if (details) return res.status(200).send({ details });
+  }
   res.status(200).json({ success: true });
 });
 
 export const bookVehicle = catchAsyncErrors(async (req, res, next) => {
-  const { vehicleId, startDate, endDate, userId } = req.body;
+  const { error, value } = bookVehicleSchema.validate(req.body);
 
-  const data = await getVehicleInfo(vehicleId);
+  if (error) {
+    console.log(error);
+    return next(new ErrorHander(JSON.stringify(error.details), 400));
+  }
 
-  if (new Date(startDate) > new Date(data.end_date) || new Date(endDate) < new Date(data.start_date)) {
-    const data = await updateVehicleStatus(
+  const { vehicleId, startDate, endDate, firstName, lastName } = value;
+  const vehicleData = await getVehicleInfo(vehicleId);
+
+  if (
+    !vehicleData.booked &&
+    new Date(startDate) > new Date(vehicleData.end_date) ||
+    new Date(endDate) < new Date(vehicleData.start_date)
+  ) {
+    const result = await updateVehicleStatus(
       vehicleId,
       startDate,
       endDate,
-      userId
+      firstName,
+      lastName
     );
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, id: result.id });
   }
-  return next(new ErrorHander("Vehicle not available to booked", 404));
+  return next(new ErrorHander("Vehicle not available for booking", 404));
 });

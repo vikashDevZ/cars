@@ -25,16 +25,12 @@ export async function getAllVehicleInfo(SubtypeId) {
     where: { SubtypeId: SubtypeId },
   });
 
-  console.log("vehiclesList", vehiclesList);
-
   if (vehiclesList) return vehiclesList;
   throw new ErrorHander("vehicles not found", 404);
 }
 
 export async function getSubModelType(SubTypeId) {
   const subtypeInfo = await Subtype.findByPk(SubTypeId, {});
-
-  console.log("subtypeInfo", subtypeInfo);
 
   if (subtypeInfo) return subtypeInfo;
   throw new ErrorHander("subtypeInfo not found with this Id", 404);
@@ -45,8 +41,6 @@ export async function getAllSubModelType(VehicleTypeId) {
     where: { VehicleTypeId: VehicleTypeId },
   });
 
-  console.log("subtypeList", subtypeList);
-
   if (subtypeList) return subtypeList;
   throw new ErrorHander("subtypeList not found", 404);
 }
@@ -54,16 +48,12 @@ export async function getAllSubModelType(VehicleTypeId) {
 export async function getVehicleType(VehicleTypeId) {
   const vehicleTypeInfo = await VehicleType.findByPk(VehicleTypeId, {});
 
-  console.log("vehicleTypeInfo", vehicleTypeInfo);
-
   if (vehicleTypeInfo) return vehicleTypeInfo;
   throw new ErrorHander("vehicleTypeInfo not found with this Id", 404);
 }
 
 export async function getAllVehicleType() {
   const vehicleTypeList = await VehicleType.findAll();
-
-  console.log("vehicleTypeList", vehicleTypeList);
 
   if (vehicleTypeList) return vehicleTypeList;
   throw new ErrorHander("vehicleTypeList not found", 404);
@@ -73,9 +63,14 @@ export async function updateVehicleStatus(
   VehicleId,
   startDate,
   endDate,
-  userId
+  firstName,
+  lastName,
 ) {
-  const user = await User.findByPk(userId);
+  const user = await User.create({
+    first_name: firstName,
+    last_name: lastName,
+  });
+
   if (!user) {
     throw new ErrorHander("User not found", 404);
   }
@@ -87,7 +82,6 @@ export async function updateVehicleStatus(
   vehicle.booked = true;
   vehicle.start_date = startDate;
   vehicle.end_date = endDate;
-  vehicle.userId = userId;
-  console.log("vehicle", vehicle);
+  vehicle.UserId = user.id;
   return await vehicle.save();
 }

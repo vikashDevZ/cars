@@ -1,6 +1,4 @@
-import dotenv from "dotenv";
 import { VehicleType, Subtype, Vehicle, User } from "../models/vehicle.js";
-dotenv.config();
 
 export default async function seedDatabase() {
   try {
@@ -16,11 +14,22 @@ export default async function seedDatabase() {
       { name: "Cruiser", VehicleTypeId: 1 },
       { name: "SUV", VehicleTypeId: 2 },
       { name: "Sedan", VehicleTypeId: 2 },
+      { name: "hatchback", VehicleTypeId: 2 },
     ]);
 
     await Vehicle.bulkCreate([
-      { name: "Sports Car", SubtypeId: 1 },
-      { name: "Mountain Bike", SubtypeId: 1 },
+      { name: "KTM 300", SubtypeId: 1 },
+
+      { name: "Royal Enfield", SubtypeId: 2 },
+
+      { name: "Range Rover", SubtypeId: 3 },
+      { name: "Mahinra Thar", SubtypeId: 3 },
+
+      { name: "Honda City", SubtypeId: 4 },
+      { name: "Maruti Suzuki", SubtypeId: 4 },
+
+      { name: "Maruti Suzuki Alto 800", SubtypeId: 5 },
+      
     ]);
 
     await User.bulkCreate([

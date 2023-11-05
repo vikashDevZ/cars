@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    image: rentcarsapp:lts
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_NAME: rentcars
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_HOST: db
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: rentcars
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"

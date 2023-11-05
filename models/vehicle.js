@@ -93,7 +93,7 @@ Vehicle.belongsTo(Subtype);
 Vehicle.belongsTo(User);
 
 
-// (async () => {
-//   await sequelize.sync({ force: true });
-//   await seedDatabase()
-// })();
+(async () => {
+  await sequelize.sync({ force: true });
+  await seedDatabase()
+})();
