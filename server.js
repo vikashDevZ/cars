@@ -4,7 +4,6 @@ import http from "http";
 import cors from "cors";
 import vehicleRouter from "./router/vehicle.js";
 import errorMiddleware from "./middleware/error.js";
-
 dotenv.config();
 
 const app = express();
@@ -24,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/vehicle", vehicleRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Welcome to Cars Rent 🦄🌈✨👋🌎🌍🌏✨🌈🦄");
 });
 app.use(errorMiddleware);

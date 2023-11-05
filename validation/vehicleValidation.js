@@ -9,6 +9,6 @@ export const bookVehicleSchema = Joi.object({
 });
 
 export const VehicleQuerySchema = Joi.object({
-  vehicleType: Joi.number().optional(),
+  vehicleType: Joi.number().integer().min(1).max(10).optional(),
   vehicleSubType: Joi.number().integer().min(1).max(100).optional(),
 });
